@@ -15,8 +15,10 @@ def read_portfolio(filename):
             }
             portfolio.append(stock)
             
-        for s in portfolio:
-            print(s)
+    for s in portfolio:
+        print(s)
+        
+    return portfolio
             
 def read_prices(filename):
     
@@ -34,10 +36,16 @@ portfolio = read_portfolio('C:\portfolio.csv')
 prices = read_prices('C:\prices.csv')
 
 for s in prices:
-            print(s)
+    print(s)
         
-total_coast = 0.0
+total_cost = 0.0
+for s in portfolio:
+    total_cost += s['shares']*s['price']
+print('Total cost', total_cost)
+    
 total_value = 0.0
-
+for s in portfolio:
+    total_value += s['shares']*prices[s['name']]
+    
 print('current value', total_value)
-print('current coast', total_coast)
+print('current cost', total_cost)
