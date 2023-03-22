@@ -1,0 +1,65 @@
+
+import csv
+
+def read_portfolio(filename):
+    portfolio =[]
+    
+    with open(filename) as f:
+        rows = csv.reader(f)
+        headers = next(rows)
+        
+        for row in rows:
+            record = dict(zip(headers, row))
+            stock = {
+                'name' : record['name'],
+                'shares' : int(record['shares']),
+                'price' : float(record['price'])
+            }
+            portfolio.append(stock)
+        return portfolio
+
+def read_prices(filename):
+    prices = {}
+    with open(filename) as f:
+        rows = csv.reader(f)
+        for row in rows:
+            try:
+                prices[row[0]] = float(row[1])
+            except IndexError:
+                pass
+    return prices
+
+
+
+def make_report_data(portfolio, prices):
+    rows= []
+    for stock in portfolio:
+        c_price = prices[stock['name']]
+        change = round(c_price - stock['price'], 2)
+        summ = (stock['name'],stock['shares'],c_price,change)
+        rows.append(summ)
+    return rows
+
+def print_report(reportdata):
+
+    format_string = '{:<10} {:<10} {:<10} {:<10}'
+    print(format_string.format('Name', 'Shares', 'Price', 'Change'))
+    print('-'*40)
+    for row in reportdata:
+        print(format_string.format(*row))
+
+def portfolio_report(portfoliofile, pricefile):        
+   
+    portfolio = read_portfolio(portfoliofile)
+    prices = read_prices(pricefile)
+    reportdata = make_report_data(portfolio, prices)
+    print_report(reportdata)
+
+def main(args):
+    if len(args) != 3:
+        raise SystemExit('Usage: %s portfile pricefile' % args[0])
+    portfolio_report(args[1], args[2])
+
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
